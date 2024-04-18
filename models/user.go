@@ -1,10 +1,13 @@
 package models
 
-import "gopkg.in/mgo.v2/bson"
+type Address struct {
+	Street  string `json:"street" bson:"street"`
+	City    string `json:"city" bson:"city"`
+	ZipCode int    `json:"zipcode" bson:"zipcode"`
+}
 
 type User struct {
-	Id     bson.ObjectId `json:"id" bson:"id"`
-	Name   string        `json:"name" bson:"name"`
-	Gender string        `json:"gender" bson:"gender"`
-	Age    uint8         `json:"age" bson:"age"`
+	Name    string  `json:"name" bson:"username"`
+	Age     uint8   `json:"age" bson:"userage"`
+	Address Address `json:"address" bson:"useraddress"`
 }
