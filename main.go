@@ -20,7 +20,6 @@ var (
 	usercollection *mongo.Collection
 	ctx            context.Context
 	mongoclient    *mongo.Client
-	err            error
 )
 
 func init() {
@@ -38,9 +37,9 @@ func init() {
 
 	fmt.Println("mongo is up and running!")
 
-	usercollection = mongoclient.Database("gocrud").Collection("users")
-	userservice = services.NewUserService(usercollection, ctx)
-	usercontroller = controllers.New(userservice)
+	usercollection = mongoclient.Database("gocrud").Collection("users") //Models Zugriff
+	userservice = services.NewUserService(usercollection, ctx)          //Services Zugriff
+	usercontroller = controllers.New(userservice)                       //Controllers Zugriff interface methoden
 	server = gin.Default()
 }
 

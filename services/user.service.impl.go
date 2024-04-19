@@ -41,12 +41,12 @@ func (u *UserServiceImpl) GetAll() ([]*models.User, error) {
 		return nil, err
 	}
 	for cursor.Next(u.ctx) {
-		var user models.User
+		var user *models.User
 		err := cursor.Decode(&user)
 		if err != nil {
 			return nil, err
 		}
-		users = append(users, &user)
+		users = append(users, user)
 	}
 	if err := cursor.Err(); err != nil {
 		return nil, err
@@ -60,8 +60,8 @@ func (u *UserServiceImpl) GetAll() ([]*models.User, error) {
 }
 
 func (u *UserServiceImpl) DeleteUser(name string) error {
-	filter := bson.D{bson.E{Key: "username", Value: name}}
-	result, _ := u.usercollection.DeleteOne(u.ctx, filter)
+	filterquery := bson.D{bson.E{Key: "username", Value: name}}
+	result, _ := u.usercollection.DeleteOne(u.ctx, filterquery)
 	if result.DeletedCount != 1 {
 		return errors.New("no matched document found for deletion")
 	}
@@ -69,14 +69,14 @@ func (u *UserServiceImpl) DeleteUser(name string) error {
 }
 
 func (u *UserServiceImpl) UpdateUser(user *models.User) error {
-	filter := bson.D{bson.E{Key: "username", Value: user.Name}}
-	update := bson.D{
+	filterquery := bson.D{bson.E{Key: "username", Value: user.Name}}
+	updatequery := bson.D{
 		bson.E{Key: "$set", Value: bson.D{
 			bson.E{Key: "username", Value: user.Name},
 			bson.E{Key: "userage", Value: user.Age},
 			bson.E{Key: "useraddress", Value: user.Address},
 		}}}
-	result, _ := u.usercollection.UpdateOne(u.ctx, filter, update)
+	result, _ := u.usercollection.UpdateOne(u.ctx, filterquery, updatequery)
 	if result.MatchedCount != 1 {
 		return errors.New("no matched document found for update")
 	}
