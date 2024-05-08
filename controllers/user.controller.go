@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/bitflippa27/go-crud/models"
@@ -79,14 +78,13 @@ func (uc *UserController) UpdateUser(ctx *gin.Context) {
 }
 
 func (uc *UserController) InitialDataLoad(ctx *gin.Context) {
-	fmt.Printf("UserContoller")
-	users, err := uc.userservice.InitialDataLoad()
+	todos, err := uc.userservice.InitialDataLoad()
 	if err != nil {
 		ctx.JSON(http.StatusBadGateway, gin.H{"message": err.Error()})
 		return
 	}
 
-	ctx.JSON(http.StatusOK, users)
+	ctx.JSON(http.StatusOK, todos)
 
 }
 

@@ -98,9 +98,9 @@ func (u *UserServiceImpl) DeleteUser(name string) error {
 	return nil
 }
 
-func (u *UserServiceImpl) InitialDataLoad() ([]*models.User, error) {
-	var users []*models.User
-	response, err := http.Get("https://jsonplaceholder.typicode.com/users")
+func (u *UserServiceImpl) InitialDataLoad() ([]*models.Todo, error) {
+	var todos []*models.Todo
+	response, err := http.Get("https://jsonplaceholder.typicode.com/todos")
 	fmt.Println(response)
 	if err != nil {
 		return nil, err
@@ -118,14 +118,14 @@ func (u *UserServiceImpl) InitialDataLoad() ([]*models.User, error) {
 		return nil, err
 	}
 
-	err = json.Unmarshal(body, &users)
+	err = json.Unmarshal(body, &todos)
 	if err != nil {
 		return nil, err
 	}
 
 	var docs []interface{}
-	for _, user := range users {
-		docs = append(docs, user)
+	for _, todo := range todos {
+		docs = append(docs, todo)
 	}
 
 	_, err = u.usercollection.InsertMany(u.ctx, docs)
@@ -133,5 +133,5 @@ func (u *UserServiceImpl) InitialDataLoad() ([]*models.User, error) {
 		return nil, err
 	}
 
-	return users, nil
+	return todos, nil
 }
