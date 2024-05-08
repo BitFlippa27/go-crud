@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/bitflippa27/go-crud/models"
@@ -12,7 +13,9 @@ type UserController struct {
 	userservice services.UserService
 }
 
-func New(userservice services.UserService) UserController {
+// Constructor returns instance of UserController
+// injecting UserService dependency into UserController
+func NewUserController(userservice services.UserService) UserController {
 	return UserController{
 		userservice: userservice,
 	}
@@ -63,7 +66,7 @@ func (uc *UserController) DeleteUser(ctx *gin.Context) {
 
 func (uc *UserController) UpdateUser(ctx *gin.Context) {
 	var user models.User
-	if err := ctx.ShouldBindJSON(&user); err != nil {
+	if err := ctx.ShouldBindJSON(&user); err != nil { //JSON to Go data structure
 		ctx.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 		return
 	}
@@ -72,7 +75,19 @@ func (uc *UserController) UpdateUser(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadGateway, gin.H{"message": err.Error()})
 		return
 	}
-	ctx.JSON(http.StatusOK, gin.H{"message": "Success"})
+	ctx.JSON(http.StatusOK, gin.H{"message": "Success"}) // Go into JSON
+}
+
+func (uc *UserController) InitialDataLoad(ctx *gin.Context) {
+	fmt.Printf("UserContoller")
+	users, err := uc.userservice.InitialDataLoad()
+	if err != nil {
+		ctx.JSON(http.StatusBadGateway, gin.H{"message": err.Error()})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, users)
+
 }
 
 func (uc *UserController) RegisterUserRoutes(rg *gin.RouterGroup) {
@@ -80,7 +95,7 @@ func (uc *UserController) RegisterUserRoutes(rg *gin.RouterGroup) {
 	userroute.POST("/create", uc.CreateUser)
 	userroute.GET("/get/:name", uc.GetUser)
 	userroute.GET("/getall", uc.GetAll)
+	userroute.GET("/initial", uc.InitialDataLoad)
 	userroute.DELETE("/delete/:name", uc.DeleteUser)
 	userroute.PATCH("/update", uc.UpdateUser)
-
 }

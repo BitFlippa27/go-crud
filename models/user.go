@@ -3,7 +3,7 @@ package models
 type Address struct {
 	Street  string `json:"street" bson:"street"`
 	City    string `json:"city" bson:"city"`
-	ZipCode int    `json:"zipcode" bson:"zipcode"`
+	ZipCode string `json:"zipcode" bson:"zipcode"`
 }
 
 type User struct {

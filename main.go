@@ -39,7 +39,7 @@ func init() {
 
 	usercollection = mongoclient.Database("gocrud").Collection("users") //Models Zugriff
 	userservice = services.NewUserService(usercollection, ctx)          //Services Zugriff
-	usercontroller = controllers.New(userservice)                       //Controllers Zugriff interface methoden
+	usercontroller = controllers.NewUserController(userservice)         //Controllers Zugriff interface methoden
 	server = gin.Default()
 }
 
