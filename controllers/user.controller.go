@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/bitflippa27/go-crud/models"
@@ -45,8 +44,8 @@ func (uc *UserController) CreateUser(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gin.H{"message": "Success"})
 }
 
-func (uc *UserController) GetAll(ctx *gin.Context) {
-	users, err := uc.userservice.GetAll()
+func (uc *UserController) GetAllUsers(ctx *gin.Context) {
+	users, err := uc.userservice.GetAllUsers()
 	if err != nil {
 		ctx.JSON(http.StatusBadGateway, gin.H{"message": err.Error()})
 		return
@@ -79,23 +78,22 @@ func (uc *UserController) UpdateUser(ctx *gin.Context) {
 }
 
 func (uc *UserController) InitialDataLoad(ctx *gin.Context) {
-	fmt.Printf("UserContoller")
-	users, err := uc.userservice.InitialDataLoad()
+	todos, err := uc.userservice.InitialDataLoad()
 	if err != nil {
 		ctx.JSON(http.StatusBadGateway, gin.H{"message": err.Error()})
 		return
 	}
 
-	ctx.JSON(http.StatusOK, users)
+	ctx.JSON(http.StatusOK, todos)
 
 }
 
 func (uc *UserController) RegisterUserRoutes(rg *gin.RouterGroup) {
-	userroute := rg.Group("/user") //base path = home route
+	userroute := rg.Group("/users") //base path = home route
 	userroute.POST("/create", uc.CreateUser)
 	userroute.GET("/get/:name", uc.GetUser)
-	userroute.GET("/getall", uc.GetAll)
+	userroute.GET("/getall", uc.GetAllUsers)
 	userroute.GET("/initial", uc.InitialDataLoad)
-	userroute.DELETE("/delete/:name", uc.DeleteUser)
+	userroute.DELETE("/delete/:id", uc.DeleteUser)
 	userroute.PATCH("/update", uc.UpdateUser)
 }
