@@ -17,8 +17,11 @@ import (
 var (
 	server         *gin.Engine
 	userservice    services.UserService
+	todoservice    services.TodoService
 	usercontroller controllers.UserController
+	todocontroller controllers.TodoController
 	usercollection *mongo.Collection
+	todocollection *mongo.Collection
 	ctx            context.Context
 	mongoclient    *mongo.Client
 )
@@ -38,9 +41,12 @@ func init() {
 
 	fmt.Println("mongo is up and running!")
 
-	usercollection = mongoclient.Database("gocrud").Collection("todos") //Models Zugriff
-	userservice = services.NewUserService(usercollection, ctx)          //Services Zugriff
-	usercontroller = controllers.NewUserController(userservice)         //Controllers Zugriff interface methoden
+	usercollection = mongoclient.Database("gocrud").Collection("users")
+	todocollection = mongoclient.Database("gocrud").Collection("todos") //Models Zugriff
+	userservice = services.NewUserService(usercollection, ctx)
+	todoservice = services.NewTodoService(todocollection, ctx)  //Services Zugriff
+	usercontroller = controllers.NewUserController(userservice) //Controllers Zugriff interface methoden
+	todocontroller = controllers.NewTodoController(todoservice)
 	server = gin.Default()
 
 	config := cors.DefaultConfig()
@@ -58,6 +64,7 @@ func main() {
 	basepath := server.Group("/v1") // v1/user/create
 
 	usercontroller.RegisterUserRoutes(basepath)
+	todocontroller.RegisterUserRoutes(basepath)
 
 	log.Fatal(server.Run(":7777"))
 }

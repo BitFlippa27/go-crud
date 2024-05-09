@@ -37,7 +37,7 @@ func (u *UserServiceImpl) GetUser(name string) (*models.User, error) {
 	return user, err
 }
 
-func (u *UserServiceImpl) GetAll() ([]*models.User, error) {
+func (u *UserServiceImpl) GetAllUsers() ([]*models.User, error) {
 	var users []*models.User
 	cursor, err := u.usercollection.Find(u.ctx, bson.D{{}})
 	if err != nil {
